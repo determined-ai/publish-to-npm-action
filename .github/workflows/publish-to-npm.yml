@@ -1,0 +1,45 @@
+name: publish-to-npm
+run-name: ${{ github.actor }} is publishing to npm
+on:
+  workflow_call:
+    inputs:
+      bump_level:
+        description: type of version bump
+        required: true
+        type: string
+      github_token:
+        description: token used to pull and commit to github
+        default: ${{ github.token }}
+        required: false
+        type: string
+      npm_token:
+        description: token used to publish to npm
+        required: true
+        type: string
+
+jobs:
+  build-and-publish:
+    name: build and publish package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ inputs.github_token }}
+      - uses: actions/setup-node@v4
+        with:
+          cache: npm
+          cache-dependency-file: 'package-lock.json'
+          node-version-file: '.nvmrc'
+      - name: "install deps"
+        run: npm ci
+      - env:
+          NPM_TOKEN: ${{ inputs.npm_token }}
+        name: "export login token"
+        run: "echo //registry.npmjs.org/:_authToken=$NPM_TOKEN > ./.npmrc"
+      - env:
+          VERSION: ${{ inputs.bump_level }}
+        name: "bump version"
+        run: "npm version $VERSION"
+      - name: "publishing"
+        run: "npm publish"
