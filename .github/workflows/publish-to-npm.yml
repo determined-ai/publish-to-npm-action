@@ -12,10 +12,9 @@ on:
         default: ${{ github.token }}
         required: false
         type: string
-      npm_token:
-        description: token used to publish to npm
+    secrets:
+      NPM_CLASSIC_TOKEN:
         required: true
-        type: string
 
 jobs:
   build-and-publish:
@@ -34,7 +33,7 @@ jobs:
       - name: "install deps"
         run: npm ci
       - env:
-          NPM_TOKEN: ${{ inputs.npm_token }}
+          NPM_TOKEN: ${{ secrets.NPM_CLASSIC_TOKEN }}
         name: "export login token"
         run: "echo //registry.npmjs.org/:_authToken=$NPM_TOKEN > ./.npmrc"
       - env:
