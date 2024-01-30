@@ -45,4 +45,4 @@ jobs:
         name: "bump version"
         run: "npm version $VERSION"
       - name: "publishing"
-        run: "npm publish"
+        run: "npm publish --access=public"
