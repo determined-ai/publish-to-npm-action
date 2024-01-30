@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           cache: npm
-          cache-dependency-file: 'package-lock.json'
+          cache-dependency-path: 'package-lock.json'
           node-version-file: '.nvmrc'
       - name: "install deps"
         run: npm ci
