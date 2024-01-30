@@ -8,8 +8,13 @@ on:
         required: true
         type: string
       github_token:
-        description: token used to pull and commit to github
         default: ${{ github.token }}
+        description: token used to pull and commit to github
+        required: false
+        type: string
+      access:
+        default: public
+        description: visibility of the published package
         required: false
         type: string
     secrets:
@@ -44,5 +49,7 @@ jobs:
           VERSION: ${{ inputs.bump_level }}
         name: "bump version"
         run: "npm version $VERSION"
-      - name: "publishing"
-        run: "npm publish --access=public"
+      - env:
+          ACCESS: ${{ inputs.access }}
+        name: "publishing"
+        run: "npm publish --access=$ACCESS"
